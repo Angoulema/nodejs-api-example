@@ -1,3 +1,3 @@
 # nodejs-api-example
 
-Example of Node JS repository with a postres DB using a TypeORM.
+Example of a Node JS repository with a postgres DB using TypeORM.
