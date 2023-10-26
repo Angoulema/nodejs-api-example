@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import UsersController from './controllers/users';
 import { createValidator } from 'express-joi-validation';
 import { userIdParamSchema, userBodyUpdateSchema, userBodySchema, userQuerySchema } from './validation/user-schemas';
@@ -43,6 +43,19 @@ export const initApp = (controller: UsersController) => {
   );
   
   app.use((_req, res) => res.status(404).json({ msg: 'Path not found' }));
+
+  app.use((error: Error, _req: Request, res: Response, next: NextFunction): void => {
+    if (error instanceof CustomError) {
+      console.warn(`${error.name}: ${error.message} ${error.stack}`)
+      res.status(error.statusCode).json({
+        errorType: error.name,
+        msg: error.message
+      })
+    }
+    console.error(error);
+    res.status(500).json({ msg: 'Unknown error'});
+    next();
+  });
 
   return app;
 };
